@@ -19,6 +19,7 @@ import contracts.DDNS;
 public class Library {
 	
 	public static void main(String[] args) {
+                String api_url = "";
 		
 		BigInteger privateKey = readPrivateKeyFromFile("key");
 
@@ -26,7 +27,7 @@ public class Library {
 		
 		Credentials cred = Credentials.create(ecKey);
 		
-		Web3j client = Web3j.build(new HttpService("https://rinkeby.infura.io/v3/3ceded5567d4415fb89585dce48526cb"));
+		Web3j client = Web3j.build(new HttpService());
 		
 		
 		try {
