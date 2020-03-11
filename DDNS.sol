@@ -4,8 +4,8 @@ contract DDNS {
 
     address public owner;
 
-    mapping(address => string) public records;
-    mapping(string => address) public reverseRecords;
+    mapping(string => address) public records;
+    mapping(address => string) public reverseRecords;
 
     modifier onlyOwner {
         require(msg.sender == owner);
@@ -14,28 +14,32 @@ contract DDNS {
 
     constructor(string memory name) public {
         owner = msg.sender;
-        records[msg.sender] = name;
-        reverseRecords[name] = msg.sender;
-        emit RegistrationEvent(now, msg.sender, name);
+        records[name] = msg.sender;
+        reverseRecords[msg.sender] = name;
+        emit RegistrationEvent(now, name, msg.sender);
     }
 
-    function register(address dest, string memory name) public onlyOwner {
-        records[dest] = name;
-        reverseRecords[name] = dest;
-        emit RegistrationEvent(now, dest, name);
+    function register(string memory name, address dest) public onlyOwner {
+        records[name] = dest;
+        reverseRecords[dest] = name;
+        emit RegistrationEvent(now, name, dest);
     }
 
-    function query(address a) public view returns (string memory){
-        return records[a];
+    function reverseLookup(address a) public view returns (string memory){
+        return reverseRecords[a];
     }
 
-   function reverseQuery(string memory name) public view returns (address){
-        return reverseRecords[name];
+   function lookup(string memory name) public view returns (address){
+        return records[name];
     }
 
-    fallback  () external payable {
+   function () external payable {
     }
 
-    event RegistrationEvent(uint timeLog, address dest, string name);
+   function kill(address payable dest) public {
+        selfdestruct(dest);
+   }
+
+    event RegistrationEvent(uint timeLog, string name, address dest);
         
 }
